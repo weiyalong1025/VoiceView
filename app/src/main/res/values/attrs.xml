@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="VoiceView">
+        <attr name="side" format="enum">
+            <enum name="left" value="865" />
+            <enum name="right" value="411" />
+        </attr>
+    </declare-styleable>
+</resources>
