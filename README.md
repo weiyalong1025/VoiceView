@@ -12,5 +12,5 @@
 ----------
 三、效果预览
 ----------
-![](http://www.baidu.com/img/bdlogo.gif)  
+![](https://github.com/weiyalong1025/VoiceView/blob/master/screenshot/S70427-143244.jpg)  
 
