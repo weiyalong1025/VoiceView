@@ -5,7 +5,6 @@ import android.media.MediaPlayer;
 import android.text.TextUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Created by wyl on 2017/4/26.
@@ -35,23 +34,12 @@ public class VoicePlayer {
     }
 
     public int getDuration(String mUri) {
-        int duration = 0;
+        int duration;
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        try {
-            if (mUri != null) {
-                HashMap<String, String> headers = null;
-                if (headers == null) {
-                    headers = new HashMap<>();
-                    headers.put("User-Agent", "Mozilla/5.0 (Linux; U; Android 4.4.2; zh-CN; MW-KW-001 Build/JRO03C) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 UCBrowser/1.0.0.001 U4/0.8.0 Mobile Safari/533.1");
-                }
-                mmr.setDataSource(mUri, headers);
-            }
-            String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            duration = ((int) Math.ceil(Integer.valueOf(durationStr) / 1000f));
-        } catch (Exception ex) {
-        } finally {
-            mmr.release();
-        }
+        mmr.setDataSource(mUri);
+        String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        duration = ((int) Math.ceil(Integer.valueOf(durationStr) / 1000f));
+        mmr.release();
         return duration;
     }
 

@@ -96,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         class ViewHolder {
-            public View coverRight;
-            public VoiceView voiceView;
+            View coverRight;
+            VoiceView voiceView;
         }
     }
 }
