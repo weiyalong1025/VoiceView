@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //
+
         File file = new File(Environment.getExternalStorageDirectory(), "test.wav");
         btnVoiceRight = (VoiceView) findViewById(R.id.btn_voice_right);
         btnVoiceRight.setSide(VoiceView.RIGHT);
