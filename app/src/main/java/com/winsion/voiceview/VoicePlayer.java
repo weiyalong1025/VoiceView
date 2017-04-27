@@ -90,6 +90,7 @@ public class VoicePlayer {
                     isPlaying = false;
                     mediaPlayer.release();
                     mediaPlayer = null;
+                    currentPath = null;
                     if (listener != null) {
                         listener.onEnd();
                     }
@@ -106,7 +107,17 @@ public class VoicePlayer {
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
+            currentPath = null;
         }
+    }
+
+    /**
+     * 返回当前正在播放的音乐的路径，如果没有播放返回null
+     *
+     * @return
+     */
+    public String getCurrentPath() {
+        return currentPath;
     }
 
     public interface OnEndListener {

@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
             Message message = list.get(position);
             if (message.getSide() == VoiceView.RIGHT) {
                 holder.coverRight.setVisibility(View.VISIBLE);
-
             } else {
                 holder.coverRight.setVisibility(View.GONE);
             }

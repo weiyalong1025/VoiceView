@@ -99,11 +99,7 @@ public class VoiceView extends RelativeLayout {
 
     private void startPlay() {
         // 开始动画
-        if (mWhichSide == LEFT) {
-            animLeft.start();
-        } else if (mWhichSide == RIGHT) {
-            animRight.start();
-        }
+        startAnim();
         // 开始播放音频
         if (!TextUtils.isEmpty(mVoiceFilePath)) {
             mVoicePlayer.playRecord(mVoiceFilePath, new VoicePlayer.OnEndListener() {
@@ -111,13 +107,7 @@ public class VoiceView extends RelativeLayout {
                 public void onEnd() {
                     mAnimState = !mAnimState;
                     // 停止动画
-                    if (mWhichSide == LEFT) {
-                        animLeft.stop();
-                        animLeft.selectDrawable(0);
-                    } else if (mWhichSide == RIGHT) {
-                        animRight.stop();
-                        animRight.selectDrawable(0);
-                    }
+                    stopAnim();
                 }
 
                 @Override
@@ -130,16 +120,28 @@ public class VoiceView extends RelativeLayout {
 
     private void stopPlay() {
         // 停止动画
+        stopAnim();
+        // 停止播放音频
+        if (!TextUtils.isEmpty(mVoiceFilePath)) {
+            mVoicePlayer.stopPlay();
+        }
+    }
+
+    private void startAnim() {
+        if (mWhichSide == LEFT) {
+            animLeft.start();
+        } else if (mWhichSide == RIGHT) {
+            animRight.start();
+        }
+    }
+
+    private void stopAnim() {
         if (mWhichSide == LEFT) {
             animLeft.stop();
             animLeft.selectDrawable(0);
         } else if (mWhichSide == RIGHT) {
             animRight.stop();
             animRight.selectDrawable(0);
-        }
-        // 停止播放音频
-        if (!TextUtils.isEmpty(mVoiceFilePath)) {
-            mVoicePlayer.stopPlay();
         }
     }
 
@@ -165,6 +167,14 @@ public class VoiceView extends RelativeLayout {
      * @param path
      */
     public void setVoiceFileDir(final String path) {
+        // 判断是否应该做动画
+        if (TextUtils.equals(mVoicePlayer.getCurrentPath(), path)) {
+            startAnim();
+            mAnimState = true;
+        } else {
+            stopAnim();
+            mAnimState = false;
+        }
         File file = new File(path);
         if (file.exists()) {
             this.mVoiceFilePath = path;
