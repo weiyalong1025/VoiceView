@@ -3,8 +3,6 @@ package com.winsion.voiceview;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -39,7 +37,7 @@ public class VoiceView extends RelativeLayout {
     private int mWhichSide;
 
     // 最大时长
-    private int maxDuration = 30;
+    private int maxDuration = 60;
     // 最小宽度
     private float MIN_WIDTH = pd2px(83);
 
@@ -154,8 +152,10 @@ public class VoiceView extends RelativeLayout {
         this.mWhichSide = side;
         if (mWhichSide == LEFT) {
             moduleLeft.setVisibility(VISIBLE);
+            moduleRight.setVisibility(GONE);
         } else if (mWhichSide == RIGHT) {
             moduleRight.setVisibility(VISIBLE);
+            moduleLeft.setVisibility(GONE);
         }
     }
 
@@ -164,34 +164,45 @@ public class VoiceView extends RelativeLayout {
      *
      * @param path
      */
-    public void setVoiceFileDir(String path) {
+    public void setVoiceFileDir(final String path) {
         File file = new File(path);
         if (file.exists()) {
             this.mVoiceFilePath = path;
             // 设置时长
-            MediaPlayer player = MediaPlayer.create(getContext(), Uri.parse(path));
-            int duration = ((int) Math.ceil(player.getDuration() / 1000f));
-            String durationStr = duration + "s";
-            if (mWhichSide == LEFT) {
-                tvDurationLeft.setText(durationStr);
-            } else if (mWhichSide == RIGHT) {
-                tvDurationRight.setText(durationStr);
-            }
-            float per = duration / maxDuration;
-            if (per > 1) {
-                per = 1;
-            }
-            if (per > 0) {
-                if (mWhichSide == LEFT) {
-                    ViewGroup.LayoutParams layoutParams = llLengthLeft.getLayoutParams();
-                    layoutParams.width = (int) (getAdjustableWidth() * per + MIN_WIDTH);
-                    llLengthLeft.setLayoutParams(layoutParams);
-                } else if (mWhichSide == RIGHT) {
-                    ViewGroup.LayoutParams layoutParams = llLengthRight.getLayoutParams();
-                    layoutParams.width = (int) (getAdjustableWidth() * per + MIN_WIDTH);
-                    llLengthRight.setLayoutParams(layoutParams);
+            new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    final int duration = mVoicePlayer.getDuration(path);
+                    post(new Runnable() {
+                        @Override
+                        public void run() {
+                            String durationStr = duration + "s";
+                            if (mWhichSide == LEFT) {
+                                tvDurationLeft.setText(durationStr);
+                            } else if (mWhichSide == RIGHT) {
+                                tvDurationRight.setText(durationStr);
+                            }
+                            float per = duration * 1f / maxDuration;
+                            if (per > 1) {
+                                per = 1;
+                            }
+                            if (mWhichSide == LEFT) {
+                                ViewGroup.LayoutParams layoutParams = llLengthLeft.getLayoutParams();
+                                layoutParams.width = (int) (getAdjustableWidth() * per + MIN_WIDTH);
+                                llLengthLeft.setLayoutParams(layoutParams);
+                            } else if (mWhichSide == RIGHT) {
+                                ViewGroup.LayoutParams layoutParams = llLengthRight.getLayoutParams();
+                                layoutParams.width = (int) (getAdjustableWidth() * per + MIN_WIDTH);
+                                llLengthRight.setLayoutParams(layoutParams);
+                            }
+                        }
+                    });
                 }
-            }
+            }.start();
+        } else {
+            // 文件不存在
+
         }
     }
 
